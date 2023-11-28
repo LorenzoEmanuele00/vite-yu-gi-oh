@@ -21,7 +21,7 @@
 .bg-color {
     background-color: $bg-color-yellow;
     .txt {
-        padding: 5px;
+        // padding: 5px;
         h3 {
             font-size: 1rem;
             color: white;
