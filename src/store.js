@@ -4,7 +4,6 @@ export const store = reactive({
     cards: [],
     loading: null,
     searchArchetype: '',
-    genCards: 20,
     genStart: 0,
 
     // API for 20 cards starting from the index 0

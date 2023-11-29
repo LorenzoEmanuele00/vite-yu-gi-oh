@@ -15,15 +15,15 @@ export default {
         };
     },
     created() {
-        this.handleSearch
+        this.searchCard()
     },
     methods: {
-        handleSearch() {
+        searchCard() {
             if (this.store.searchArchetype === "") {
                 axios
                     .get(this.store.apiURL, {
                         params: {
-                            num: this.store.genCards,
+                            num: 20,
                             offset: this.store.genStart
                         },
                     })
@@ -35,15 +35,31 @@ export default {
                     .get(this.store.apiURL, {
                         params: {
                             archetype: this.store.searchArchetype,
-                            num: this.store.genCards,
+                            num: 20,
                             offset: this.store.genStart
                         },
                     })
                     .then((resp) => {
                         this.store.cards = resp.data.data;
                     });
-                }
+            }
         },
+        nextCards() {
+            if (this.store.cards.length === 20) {
+                this.store.genStart += 20;
+                this.searchCard();
+            }
+        },
+        previusCards() {
+            if (this.store.genStart != 0) {
+                this.store.genStart -= 20;
+                this.searchCard();
+            } 
+        },
+        handleSearch() {
+            this.store.genStart = 0;
+            this.searchCard();
+        }
     },
 };
 </script>
@@ -53,17 +69,17 @@ export default {
         <div class="container p-4">
             <AppSelect @search="handleSearch()" />
             <div class="p-4 container-cards">
-                <div v-if="store.loading">
-                    <div class="p-3 bg-color-b">LOADING</div>
-                </div>
-                <div v-else>
-                    <div class="p-3 bg-color-b">Found 20 cards</div>
-                    <div class="row row-cols-xs-2 row-cols-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 g-xxl-5">
-                        <div class="col d-flex" v-for="card in store.cards" :key="card.id">
-                            <AppCard :card="card" />
-                        </div>
+                <div class="p-3 bg-color-b">Found {{store.cards.length}} cards</div>
+                <div class="row row-cols-xs-2 row-cols-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 g-xxl-5">
+                    <div class="col d-flex" v-for="card in store.cards" :key="card.id">
+                        <AppCard :card="card" />
                     </div>
                 </div>
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-danger" @click="previusCards()">Carica le precedenti carte</button>
+                    <button class="btn btn-danger" @click="nextCards()">Carica le prossime carte</button>
+                </div>
+                
             </div>
         </div>
     </div>
